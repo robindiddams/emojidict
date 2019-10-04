@@ -25,7 +25,7 @@ func (c *Client) Close() (err error) {
 
 // Character is a single unicode character
 type Character struct {
-	Value       string
-	Description string
-	Hex         string
+	Value       string `json:"value"`
+	Description string `json:"description"`
+	Hex         string `json:"hex"`
 }
