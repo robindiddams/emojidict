@@ -76,7 +76,7 @@ var emojisTemplate = template.Must(template.New("").Parse(docHeader + `
 
 var (
 {{- range $i, $emoji := .Emojis }}
-	{{ $emoji.ProperName }} = []rune{ {{- range $i, $hex := $emoji.CodePoints }}0x{{ $hex }},{{- end }}}
+	{{ $emoji.ProperName }} = Emoji{ {{- range $i, $hex := $emoji.CodePoints }}0x{{ $hex }},{{- end }}}
 {{- end }}
 )
 
@@ -87,7 +87,7 @@ var categoriesTemplate = template.Must(template.New("").Parse(docHeader + `
 // TODO: break these up into categories
 
 // All is a list of every emoji
-var All = [][]rune{
+var All = []Emoji{
 {{- range $i, $emoji := .Emojis }}
 	{{ $emoji.ProperName }},
 {{- end }}
