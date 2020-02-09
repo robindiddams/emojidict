@@ -10,8 +10,9 @@ fmt.Println(emojidict.RollingOnTheFloorLaughing.String())
 // 🤣
 ```
 
-## Generation
+### Generation
+Make sure theres a line parser registered for whatever version of emoji you're pulling in `scraper/parser.go` and then do:
+```
+go generate
+```
 This pulls from the `unicode.org` ftp server, so dont use it a lot or they might shut that down, but I cache the request the first time so it's probably okay.
-```
-https://raw.githubusercontent.com/Robindiddams/emoji-fetcher/master/export/latest.json?token=AB4ENWJH5DPFB2UPJTIFLXC5UDUEA
-```
