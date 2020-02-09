@@ -3,7 +3,11 @@ package scraper
 import (
 	"bytes"
 	"fmt"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 	"sort"
+	"strings"
 
 	"github.com/blang/semver"
 )
@@ -22,6 +26,8 @@ const (
 	SequencesZWJFileName EmojiFile = "emoji-zwj-sequences.txt"
 
 	emojiPath = "Public/emoji"
+
+	cacheDir = "dist"
 )
 
 // GetEmojiVersions will get every published version of emoji
@@ -64,12 +70,45 @@ func makepath(version string, filename EmojiFile) string {
 	return emojiPath + "/" + version + "/" + string(filename)
 }
 
+func fileExists(filename string) bool {
+	f, err := filepath.Abs(filename)
+	if err != nil {
+		return false
+	}
+	_, err = os.Stat(f)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return true
+}
+
+func makeCachePath(path string) string {
+	return filepath.Join(cacheDir, strings.ReplaceAll(path, "/", "_"))
+}
+
 func (c *Client) getFile(path string) ([]byte, error) {
+	cacheFile := makeCachePath(path)
+	// check cache
+	if fileExists(cacheFile) {
+		buf, err := ioutil.ReadFile(cacheFile)
+		if err == nil {
+			return buf, nil
+		}
+		fmt.Println("error reading cachefile:", err)
+	}
 	var buf bytes.Buffer
 	if err := c.ftpclient.Retrieve(path, &buf); err != nil {
 		return nil, err
 	}
-	return buf.Bytes(), nil
+	data := buf.Bytes()
+	// save to cache
+	if !fileExists(cacheDir) {
+		os.MkdirAll(cacheDir, 0777)
+	}
+	if err := ioutil.WriteFile(cacheFile, data, 0777); err != nil {
+		fmt.Println("error writing cachefile:", err)
+	}
+	return data, nil
 }
 
 // GetEmojiFile returns file for version
@@ -79,15 +118,16 @@ func (c *Client) GetEmojiFile(version string, file EmojiFile) ([]byte, error) {
 
 // GetLatestEmojiFile is a convenience for creating a client, connectecting, finding the latest emoji version,
 // and getting a file from it.
-func GetLatestEmojiFile(file EmojiFile) ([]byte, error) {
+func GetLatestEmojiFile(file EmojiFile) ([]byte, string, error) {
 	c := Client{}
 	if err := c.Connect(); err != nil {
-		return nil, fmt.Errorf("error connecting: %w", err)
+		return nil, "", fmt.Errorf("error connecting: %w", err)
 	}
 	defer c.Close()
 	v, err := c.GetLatestEmojiVersion()
 	if err != nil {
-		return nil, fmt.Errorf("error getting latest emoji version: %w", err)
+		return nil, "", fmt.Errorf("error getting latest emoji version: %w", err)
 	}
-	return c.getFile(makepath(v, file))
+	buf, err := c.getFile(makepath(v, file))
+	return buf, v, err
 }
