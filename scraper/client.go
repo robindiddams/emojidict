@@ -1,4 +1,4 @@
-package unicode
+package scraper
 
 import (
 	"github.com/secsy/goftp"
@@ -13,19 +13,12 @@ type Client struct {
 func (c *Client) Connect() (err error) {
 	c.ftpclient, err = goftp.Dial("unicode.org")
 	if err != nil {
-		return err
+		return
 	}
-	return nil
+	return
 }
 
 // Close the client
-func (c *Client) Close() (err error) {
+func (c *Client) Close() error {
 	return c.ftpclient.Close()
-}
-
-// Character is a single unicode character
-type Character struct {
-	Value       string `json:"value"`
-	Description string `json:"description"`
-	Hex         string `json:"hex"`
 }

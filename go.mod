@@ -1,4 +1,4 @@
-module github.com/Robindiddams/emoji-api
+module github.com/Robindiddams/emojidict
 
 go 1.13
 
