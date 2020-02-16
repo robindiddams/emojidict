@@ -33,16 +33,23 @@ func NewTrie() Trie {
 // Load adds a []rune to the Trie
 func (t *Trie) Load(emoji []rune) {
 	if len(emoji) == 1 {
-		t.root.next[emoji[0]] = &node{terminal: true}
+		t.root.next[emoji[0]] = newTerminalNode()
 		return
 	}
 	current := t.root
 	for i, r := range emoji {
 		if i == len(emoji)-1 {
 			// last element
-			current.next[r] = newTerminalNode()
+			if current.next[r] == nil {
+				current.next[r] = newTerminalNode()
+			} else {
+				// this may never happen
+				current.next[r].terminal = true
+			}
 		} else {
-			current.next[r] = newNode()
+			if current.next[r] == nil {
+				current.next[r] = newNode()
+			}
 			current = current.next[r]
 		}
 	}

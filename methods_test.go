@@ -23,16 +23,16 @@ func TestParserWithHumanEmoji(t *testing.T) {
 	assert.EqualValues(emojidict.WomanShrugging, emojis[0])
 }
 
-// func TestRemoveEmojis(t *testing.T) {
-// 	assert := assert.New(t)
-// 	parser := emojidict.NewEmojiParser()
-// 	cleanStr := parser.RemoveEmojis("fix tests ✅!!")
-// 	assert.EqualValues("fix tests !!", cleanStr)
-// }
+func TestRemoveEmojis(t *testing.T) {
+	assert := assert.New(t)
+	parser := emojidict.NewEmojiParser()
+	cleanStr := parser.RemoveEmojis("fix tests ✅!!")
+	assert.EqualValues("fix tests !!", cleanStr)
+}
 
-// func TestRemoveMultipleEmojis(t *testing.T) {
-// 	assert := assert.New(t)
-// 	parser := emojidict.NewEmojiParser()
-// 	cleanStr := parser.RemoveEmojis("fix tests ✅!!🤔 or did I " + emojidict.WomanShrugging.String())
-// 	assert.EqualValues("fix tests !!", cleanStr)
-// }
+func TestRemoveMultipleEmojis(t *testing.T) {
+	assert := assert.New(t)
+	parser := emojidict.NewEmojiParser()
+	cleanStr := parser.RemoveEmojis("fix tests ✅!!🤔 or did I " + emojidict.WomanShrugging.String())
+	assert.EqualValues("fix tests !! or did I ", cleanStr)
+}

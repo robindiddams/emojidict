@@ -28,17 +28,17 @@ func (p *Parser) FindEmojis(s string) []Emoji {
 	return emojis
 }
 
-// // RemoveEmojis finds all emojis in a string and removes them
-// func (p *Parser) RemoveEmojis(s string) string {
-// 	str := []rune(s)
-// 	fmt.Println(str)
-// 	var place int
-// 	p.emojtree.SearchF(s, func(hit []rune, at int) bool {
-// 		fmt.Println(hit)
-// 		at = at - place
-// 		str = append(str[:at], str[at+len(hit):]...)
-// 		place += len(hit)
-// 		return false
-// 	})
-// 	return string(str)
-// }
+// RemoveEmojis finds all emojis in a string and removes them,
+// this uses the trie which is less efficient than if the emoji
+// ranges were loaded into a regex.
+func (p *Parser) RemoveEmojis(s string) string {
+	str := []rune(s)
+	var place int
+	p.emojtree.SearchF(s, func(hit []rune, at int) bool {
+		at = at - place
+		str = append(str[:at], str[at+len(hit):]...)
+		place += len(hit)
+		return false
+	})
+	return string(str)
+}
