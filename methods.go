@@ -1,7 +1,7 @@
 package emojidict
 
 import (
-	"github.com/Robindiddams/emojidict/trie"
+	"github.com/robindiddams/go-trie"
 )
 
 // Parser is a wrapper on a trie

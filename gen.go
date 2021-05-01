@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Robindiddams/emojidict/scraper"
+	"github.com/robindiddams/emojidict/scraper"
 )
 
 func main() {

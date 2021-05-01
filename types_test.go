@@ -3,7 +3,7 @@ package emojidict_test
 import (
 	"testing"
 
-	"github.com/Robindiddams/emojidict"
+	"github.com/robindiddams/emojidict"
 
 	"github.com/stretchr/testify/assert"
 )
