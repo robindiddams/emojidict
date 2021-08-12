@@ -29,6 +29,7 @@ func main() {
 		}
 		emojis = append(emojis, *l)
 	}
+	fmt.Printf("Emoji version %s (%d total)\n", version, len(emojis))
 	// TODO: pull user from git config
 	user := os.Getenv("USER")
 	if user == "" {

@@ -72,9 +72,17 @@ func (l *EmojiLine) clean() {
 			propername = strings.Replace(propername, old, new, 1)
 		}
 	}
+	replaceSuffixWith := func(old, new string) {
+		if strings.HasSuffix(propername, old) {
+			propername = strings.Replace(propername, old, new, 1)
+		}
+	}
 	replacePrefixWith("1st", "first")
 	replacePrefixWith("2nd", "second")
 	replacePrefixWith("3rd", "third")
+
+	replaceSuffixWith("*", "star")
+	replaceSuffixWith("#", "hashtag")
 
 	// snake-case-ify
 	propername = strings.ReplaceAll(propername, " ", "_")
@@ -87,8 +95,22 @@ func (l *EmojiLine) clean() {
 
 // testFileV13 parses "emoji-test.txt" for emoji version 13
 func testFileV13(line string) *EmojiLine {
-	rejectex := regexp.MustCompile("^[#0]")
-	acceptex := regexp.MustCompile("(.*)\\s+;\\sfully-qualified\\s+#.*E\\d+\\.\\d\\s(.*)")
+	rejectex := regexp.MustCompile(`^#`)
+	acceptex := regexp.MustCompile(`(.*)\s+;\sfully-qualified\s+#.*E\d+\.\d\s(.*)`)
+	if !rejectex.MatchString(line) && acceptex.MatchString(line) {
+		matches := acceptex.FindStringSubmatch(line)
+		return &EmojiLine{
+			CodePoints: strings.Split(strings.TrimSpace(matches[1]), " "),
+			Name:       strings.TrimSpace(matches[2]),
+		}
+	}
+	return nil
+}
+
+// testFileV14 parses "emoji-test.txt" for emoji version 14
+func testFileV14(line string) *EmojiLine {
+	rejectex := regexp.MustCompile(`^#`)
+	acceptex := regexp.MustCompile(`(.*)\s+;\sfully-qualified\s+#.*E\d+\.\d\s(.*)`)
 	if !rejectex.MatchString(line) && acceptex.MatchString(line) {
 		matches := acceptex.FindStringSubmatch(line)
 		return &EmojiLine{
@@ -101,4 +123,5 @@ func testFileV13(line string) *EmojiLine {
 
 func init() {
 	RegisterParserFunc("13.0", TestFileName, testFileV13)
+	RegisterParserFunc("14.0", TestFileName, testFileV14)
 }

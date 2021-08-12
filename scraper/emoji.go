@@ -76,10 +76,7 @@ func fileExists(filename string) bool {
 		return false
 	}
 	_, err = os.Stat(f)
-	if os.IsNotExist(err) {
-		return false
-	}
-	return true
+	return !os.IsNotExist(err)
 }
 
 func makeCachePath(path string) string {
